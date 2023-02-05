@@ -73,6 +73,7 @@ The following link demonstrates testing done using Insomnia Core:
 4. Dotenv
 5. Express.js
 6. Sequelize
+7. Insomnia Core
 
 ## License
 
