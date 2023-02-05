@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { RESERVED } = require('mysql2/lib/constants/client');
 const { Tag, Product, ProductTag } = require('../../models');
 
 // The `/api/tags` endpoint
@@ -9,9 +10,9 @@ router.get('/', (req, res) => {
   Tag.findAll({
     attributes: ['id', 'tag_name'],
     include: [
-        {
+      {
         model: Product,
-        attributes: ['id', 'product_name', 'price', 'stock', 'category'],
+        attribute: ['id', 'product_name', 'price', 'stock', 'category_id']
       }
     ]
   })
@@ -26,13 +27,13 @@ router.get('/:id', (req, res) => {
   // be sure to include its associated Product data
   Tag.findOne({
     where: {
-      id: id.req.params.id
+      id: req.params.id
     },
     attributes: ['id', 'tag_name'],
     include: [
-      {
+    {
       model: Product,
-      attributes: ['id', 'product_name', 'price', 'stock', 'category'],
+      attribute: ['id', 'product_name', 'price', 'stock', 'category_id']
     }
   ]
   })
@@ -40,7 +41,7 @@ router.get('/:id', (req, res) => {
     if(!TagDB) {
       res.status(404).json(err)
     }
-    req.json(TagDB)
+    res.json(TagDB)
   })
   .catch(err => {
     res.status(500).json(err);
@@ -50,7 +51,7 @@ router.get('/:id', (req, res) => {
 router.post('/', (req, res) => {
   // create a new tag
   Tag.create ({
-    tag_name: ['id', 'tag_name'],
+    tag_name: req.body.tag_name,
   })
   .then(TagDB => res.json(TagDB))
   .catch(err => {
@@ -60,7 +61,7 @@ router.post('/', (req, res) => {
 
 router.put('/:id', (req, res) => {
   // update a tag's name by its `id` value
-  Tag.update ({
+  Tag.update(req.body, {
     where: {
       id: req.params.id
     }
@@ -69,7 +70,7 @@ router.put('/:id', (req, res) => {
     if(!TagDB) {
       res.status(404).json(err)
     }
-    req.json(TagDB)
+    res.json(TagDB)
   })
   .catch(err => {
     res.status(500).json(err);
@@ -78,7 +79,7 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   // delete on tag by its `id` value
-  Tag.delete ({
+  Tag.destroy ({
     where: {
       id: req.params.id
     }
@@ -87,7 +88,7 @@ router.delete('/:id', (req, res) => {
     if(!TagDB) {
       res.status(404).json(err)
     }
-    req.json(TagDB)
+    res.json(TagDB)
   })
   .catch(err => {
     res.status(500).json(err);

@@ -12,8 +12,8 @@ Tag.init(
       primaryKey: true,
       autoIncrement: true
     },
-    tage_name: {
-      type: DataTypes.STIRNG
+    tag_name: {
+      type: DataTypes.STRING
     }
   },
   {
